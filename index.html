@@ -1185,17 +1185,14 @@
 <script>
 window.petzooSaveLead = async function(email){
   try {
-    if(!window.claude || typeof window.claude.use !== "function") return;
-    var artifact = await window.claude.use("artifact");
-    if(!artifact) return;
-    var current = [];
-    try {
-      var res = await fetch("leads.json");
-      if(res.ok){ current = await res.json(); }
-    } catch(e){}
-    if(!Array.isArray(current)) current = [];
-    current.push({email: email, ts: new Date().toISOString()});
-    await artifact.publish({"leads.json": JSON.stringify(current)});
+    var body = new URLSearchParams();
+    body.set("entry.782942585", email);
+    await fetch("https://docs.google.com/forms/d/e/1FAIpQLSfvY0O4Y5OQgdybGaUoBTS_Q8EijDTIlbU-noPj0L3O8J5KJQ/formResponse", {
+      method: "POST",
+      mode: "no-cors",
+      headers: {"Content-Type": "application/x-www-form-urlencoded"},
+      body: body.toString()
+    });
   } catch(e){
     console.warn("petzoo: lead not saved", e);
   }
