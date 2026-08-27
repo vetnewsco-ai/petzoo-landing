@@ -1183,16 +1183,27 @@
 </script>
 
 <script>
-window.petzooSaveLead = async function(email){
+window.petzooSaveLead = function(email){
   try {
-    var body = new URLSearchParams();
-    body.set("entry.782942585", email);
-    await fetch("https://docs.google.com/forms/d/e/1FAIpQLSfvY0O4Y5OQgdybGaUoBTS_Q8EijDTIlbU-noPj0L3O8J5KJQ/formResponse", {
-      method: "POST",
-      mode: "no-cors",
-      headers: {"Content-Type": "application/x-www-form-urlencoded"},
-      body: body.toString()
-    });
+    var iframe = document.createElement("iframe");
+    iframe.name = "petzoo_lead_target";
+    iframe.style.display = "none";
+    document.body.appendChild(iframe);
+
+    var form = document.createElement("form");
+    form.action = "https://docs.google.com/forms/d/e/1FAIpQLSfvY0O4Y5OQgdybGaUoBTS_Q8EijDTIlbU-noPj0L3O8J5KJQ/formResponse";
+    form.method = "POST";
+    form.target = "petzoo_lead_target";
+
+    var input = document.createElement("input");
+    input.type = "hidden";
+    input.name = "entry.782942585";
+    input.value = email;
+    form.appendChild(input);
+
+    document.body.appendChild(form);
+    form.submit();
+    setTimeout(function(){ form.remove(); iframe.remove(); }, 3000);
   } catch(e){
     console.warn("petzoo: lead not saved", e);
   }
